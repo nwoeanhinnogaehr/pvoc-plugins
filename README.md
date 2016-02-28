@@ -1,6 +1,6 @@
 # pvoc-plugins
-A collection of phase vocoder based LADSPA plugins
-Compile with `cargo build --release`, throw "target/release/libpvoc_plugins.so" in your LADSPA path, and you're good to go!
+A collection of phase vocoder based LADSPA plugins.
+Compile with `cargo build --release`, throw `target/release/libpvoc_plugins.so` in your LADSPA path, and you're good to go!
 
 ## The plugins
 Every plugin has a "Bins" setting - this controls the number of frequency bins used for the phase vocoder. Too few will be low quality and too many will blur the audio through time.
