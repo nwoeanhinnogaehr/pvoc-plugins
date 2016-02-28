@@ -1,5 +1,5 @@
 use pvoc::{PhaseVocoder, Bin};
-use ladspa::{self, PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection};
+use ladspa::{PluginDescriptor, Plugin, PortConnection};
 
 struct Centroid {
     pvoc: PhaseVocoder,
@@ -54,41 +54,9 @@ impl Plugin for Centroid {
 }
 
 pub fn get_descriptor() -> PluginDescriptor {
-    PluginDescriptor {
-        unique_id: 9402,
-        label: "pvoc_centroid",
-        properties: ladspa::PROP_NONE,
-        name: "pvoc centroid",
-        maker: "Noah Weninger",
-        copyright: "None",
-        ports: vec![Port {
-                        name: "Left Audio In",
-                        desc: PortDescriptor::AudioInput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Right Audio In",
-                        desc: PortDescriptor::AudioInput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Left Audio Out",
-                        desc: PortDescriptor::AudioOutput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Right Audio Out",
-                        desc: PortDescriptor::AudioOutput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Bins",
-                        desc: PortDescriptor::ControlInput,
-                        hint: Some(ladspa::HINT_INTEGER),
-                        default: None,
-                        lower_bound: Some(2.0),
-                        upper_bound: Some(16.0),
-                    }],
-        new: Centroid::new,
-    }
+    let mut desc = super::base_descriptor();
+    desc.label = "pvoc_centroid";
+    desc.name = "pvoc centroid";
+    desc.new = Centroid::new;
+    desc
 }

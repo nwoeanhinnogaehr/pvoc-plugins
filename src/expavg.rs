@@ -1,5 +1,5 @@
 use pvoc::{PhaseVocoder, Bin};
-use ladspa::{self, PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection};
+use ladspa::{PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection};
 
 struct ExpAvg {
     pvoc: PhaseVocoder,
@@ -69,73 +69,41 @@ impl Plugin for ExpAvg {
 }
 
 pub fn get_descriptor() -> PluginDescriptor {
-    PluginDescriptor {
-        unique_id: 9403,
-        label: "pvoc_exponential_averager",
-        properties: ladspa::PROP_NONE,
-        name: "pvoc upwards sweeping exponential averager",
-        maker: "Noah Weninger",
-        copyright: "None",
-        ports: vec![Port {
-                        name: "Left Audio In",
-                        desc: PortDescriptor::AudioInput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Right Audio In",
-                        desc: PortDescriptor::AudioInput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Left Audio Out",
-                        desc: PortDescriptor::AudioOutput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Right Audio Out",
-                        desc: PortDescriptor::AudioOutput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Bins",
-                        desc: PortDescriptor::ControlInput,
-                        hint: Some(ladspa::HINT_INTEGER),
-                        default: None,
-                        lower_bound: Some(2.0),
-                        upper_bound: Some(16.0),
-                    },
-                    Port {
-                        name: "Freqency Alpha",
-                        desc: PortDescriptor::ControlInput,
-                        hint: None,
-                        default: None,
-                        lower_bound: Some(0.0),
-                        upper_bound: Some(1.0),
-                    },
-                    Port {
-                        name: "Amplitude Alpha",
-                        desc: PortDescriptor::ControlInput,
-                        hint: None,
-                        default: None,
-                        lower_bound: Some(0.0),
-                        upper_bound: Some(1.0),
-                    },
-                    Port {
-                        name: "Freqency Mix",
-                        desc: PortDescriptor::ControlInput,
-                        hint: None,
-                        default: None,
-                        lower_bound: Some(0.0),
-                        upper_bound: Some(1.0),
-                    },
-                    Port {
-                        name: "Amplitude Mix",
-                        desc: PortDescriptor::ControlInput,
-                        hint: None,
-                        default: None,
-                        lower_bound: Some(0.0),
-                        upper_bound: Some(1.0),
-                    }],
-        new: ExpAvg::new,
-    }
+    let mut desc = super::base_descriptor();
+    desc.label = "pvoc_exponential_averager";
+    desc.name = "pvoc upwards sweeping exponential averager";
+    desc.new = ExpAvg::new;
+    desc.ports.push(Port {
+        name: "Freqency Alpha",
+        desc: PortDescriptor::ControlInput,
+        hint: None,
+        default: None,
+        lower_bound: Some(0.0),
+        upper_bound: Some(1.0),
+    });
+    desc.ports.push(Port {
+        name: "Amplitude Alpha",
+        desc: PortDescriptor::ControlInput,
+        hint: None,
+        default: None,
+        lower_bound: Some(0.0),
+        upper_bound: Some(1.0),
+    });
+    desc.ports.push(Port {
+        name: "Freqency Mix",
+        desc: PortDescriptor::ControlInput,
+        hint: None,
+        default: None,
+        lower_bound: Some(0.0),
+        upper_bound: Some(1.0),
+    });
+    desc.ports.push(Port {
+        name: "Amplitude Mix",
+        desc: PortDescriptor::ControlInput,
+        hint: None,
+        default: None,
+        lower_bound: Some(0.0),
+        upper_bound: Some(1.0),
+    });
+    desc
 }

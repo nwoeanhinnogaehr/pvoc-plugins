@@ -1,5 +1,5 @@
 use pvoc::{PhaseVocoder, Bin};
-use ladspa::{self, PluginDescriptor, PortDescriptor, Port, DefaultValue, Plugin, PortConnection};
+use ladspa::{PluginDescriptor, PortDescriptor, Port, DefaultValue, Plugin, PortConnection};
 
 struct PitchShifter {
     pvoc: PhaseVocoder,
@@ -55,49 +55,17 @@ impl Plugin for PitchShifter {
 }
 
 pub fn get_descriptor() -> PluginDescriptor {
-    PluginDescriptor {
-        unique_id: 9401,
-        label: "pvoc_shift",
-        properties: ladspa::PROP_NONE,
-        name: "pvoc pitch shift",
-        maker: "Noah Weninger",
-        copyright: "None",
-        ports: vec![Port {
-                        name: "Left Audio In",
-                        desc: PortDescriptor::AudioInput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Right Audio In",
-                        desc: PortDescriptor::AudioInput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Left Audio Out",
-                        desc: PortDescriptor::AudioOutput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Right Audio Out",
-                        desc: PortDescriptor::AudioOutput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Bins",
-                        desc: PortDescriptor::ControlInput,
-                        hint: Some(ladspa::HINT_INTEGER),
-                        default: None,
-                        lower_bound: Some(2.0),
-                        upper_bound: Some(16.0),
-                    },
-                    Port {
-                        name: "Shift",
-                        desc: PortDescriptor::ControlInput,
-                        hint: None,
-                        default: Some(DefaultValue::Value1),
-                        lower_bound: Some(0.0),
-                        upper_bound: Some(8.0),
-                    }],
-        new: PitchShifter::new,
-    }
+    let mut desc = super::base_descriptor();
+    desc.label = "pvoc_pitch_shifter";
+    desc.name = "pvoc pitch shifter";
+    desc.ports.push(Port {
+        name: "Shift",
+        desc: PortDescriptor::ControlInput,
+        hint: None,
+        default: Some(DefaultValue::Value1),
+        lower_bound: Some(0.0),
+        upper_bound: Some(8.0),
+    });
+    desc.new = PitchShifter::new;
+    desc
 }

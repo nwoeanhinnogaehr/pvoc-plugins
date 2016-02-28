@@ -1,5 +1,5 @@
 use pvoc::{PhaseVocoder, Bin};
-use ladspa::{self, PluginDescriptor, PortDescriptor, Port, DefaultValue, Plugin, PortConnection};
+use ladspa::{PluginDescriptor, PortDescriptor, Port, DefaultValue, Plugin, PortConnection};
 
 fn fmod(a: f64, b: f64) -> f64 {
     if b.is_infinite() {
@@ -60,49 +60,17 @@ impl Plugin for ModularAmp {
 }
 
 pub fn get_descriptor() -> PluginDescriptor {
-    PluginDescriptor {
-        unique_id: 9404,
-        label: "pvoc_modamp",
-        properties: ladspa::PROP_NONE,
-        name: "pvoc amplitude modulus",
-        maker: "Noah Weninger",
-        copyright: "None",
-        ports: vec![Port {
-                        name: "Left Audio In",
-                        desc: PortDescriptor::AudioInput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Right Audio In",
-                        desc: PortDescriptor::AudioInput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Left Audio Out",
-                        desc: PortDescriptor::AudioOutput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Right Audio Out",
-                        desc: PortDescriptor::AudioOutput,
-                        ..Default::default()
-                    },
-                    Port {
-                        name: "Bins",
-                        desc: PortDescriptor::ControlInput,
-                        hint: Some(ladspa::HINT_INTEGER),
-                        default: None,
-                        lower_bound: Some(2.0),
-                        upper_bound: Some(16.0),
-                    },
-                    Port {
-                        name: "Mod",
-                        desc: PortDescriptor::ControlInput,
-                        hint: None,
-                        default: Some(DefaultValue::Value0),
-                        lower_bound: Some(0.0),
-                        upper_bound: Some(25.0),
-                    }],
-        new: ModularAmp::new,
-    }
+    let mut desc = super::base_descriptor();
+    desc.label = "pvoc_mod_amp";
+    desc.name = "pvoc amplitude modulus";
+    desc.ports.push(Port {
+        name: "Mod",
+        desc: PortDescriptor::ControlInput,
+        hint: None,
+        default: Some(DefaultValue::Value1),
+        lower_bound: Some(0.0),
+        upper_bound: Some(25.0),
+    });
+    desc.new = ModularAmp::new;
+    desc
 }
