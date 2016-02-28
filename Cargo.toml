@@ -1,0 +1,14 @@
+[package]
+name = "pvoc-plugins"
+version = "0.1.0"
+authors = ["Noah Weninger <nweninge@ualberta.ca>"]
+
+[dependencies]
+ladspa = "*"
+
+[dependencies.pvoc]
+path = "../pvoc-rs"
+
+[lib]
+name = "pvoc_plugins"
+crate-type = ["dylib"]
