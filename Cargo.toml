@@ -5,9 +5,7 @@ authors = ["Noah Weninger <nweninge@ualberta.ca>"]
 
 [dependencies]
 ladspa = "*"
-
-[dependencies.pvoc]
-path = "../pvoc-rs"
+pvoc = "*"
 
 [lib]
 name = "pvoc_plugins"
