@@ -1,39 +1,39 @@
 use pvoc::{PhaseVocoder, Bin};
-use ladspa::{self, PluginDescriptor, PortDescriptor, Port, DefaultValue, Plugin, PortConnection};
+use ladspa::{self, PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection, DefaultValue};
 
-struct PitchShifter {
+struct FormantShifter {
     pvoc: PhaseVocoder,
-    bins: usize,
     sample_rate: f64,
+    bins: usize,
 }
 
-impl PitchShifter {
+impl FormantShifter {
     fn new(_: &PluginDescriptor, sample_rate: u64) -> Box<Plugin + Send> {
-        Box::new(PitchShifter {
-            pvoc: PhaseVocoder::new(2, sample_rate as f64, 10, 32),
-            bins: 10,
+        Box::new(FormantShifter {
+            pvoc: PhaseVocoder::new(2, sample_rate as f64, 8, 4),
             sample_rate: sample_rate as f64,
+            bins: 8,
         })
     }
 
-    fn process(rate: f64,
+    fn process(shift: f64,
                channels: usize,
                bins: usize,
                input: &[Vec<Bin>],
                output: &mut [Vec<Bin>]) {
         for i in 0..channels {
             for j in 0..bins {
-                let index = ((j as f64) * rate) as usize;
-                if index < bins - 1 {
-                    output[i][index].freq = input[i][j].freq * rate;
-                    output[i][index].amp += input[i][j].amp;
+                let index = ((j as f64) * shift) as usize;
+                if index < bins {
+                    output[i][j].amp = input[i][index].amp;
                 }
+                output[i][j].freq = input[i][j].freq;
             }
         }
     }
 }
 
-impl Plugin for PitchShifter {
+impl Plugin for FormantShifter {
     fn run<'a>(&mut self, _: usize, ports: &[&'a PortConnection<'a>]) {
         let input = vec![ports[0].unwrap_audio(), ports[1].unwrap_audio()];
         let mut outputl = ports[2].unwrap_audio_mut();
@@ -44,22 +44,22 @@ impl Plugin for PitchShifter {
             self.bins = bins;
             self.pvoc = PhaseVocoder::new(2, self.sample_rate, bins, 4);
         }
-        let rate = *ports[5].unwrap_control();
+        let shift = *ports[5].unwrap_control() as f64;
         self.pvoc.process(&input, &mut output, |channels: usize,
                            bins: usize,
                            input: &[Vec<Bin>],
                            output: &mut [Vec<Bin>]| {
-            PitchShifter::process(rate as f64, channels, bins, input, output)
+            FormantShifter::process(shift, channels, bins, input, output)
         });
     }
 }
 
 pub fn get_descriptor() -> PluginDescriptor {
     PluginDescriptor {
-        unique_id: 9401,
-        label: "pvoc_shift",
+        unique_id: 9405,
+        label: "pvoc_formant_shifter",
         properties: ladspa::PROP_NONE,
-        name: "pvoc pitch shift",
+        name: "pvoc formant shifter",
         maker: "Noah Weninger",
         copyright: "None",
         ports: vec![Port {
@@ -98,6 +98,6 @@ pub fn get_descriptor() -> PluginDescriptor {
                         lower_bound: Some(0.0),
                         upper_bound: Some(8.0),
                     }],
-        new: PitchShifter::new,
+        new: FormantShifter::new,
     }
 }

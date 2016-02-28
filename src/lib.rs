@@ -9,6 +9,8 @@ mod pitchshifter;
 mod centroid;
 mod expavg;
 mod modularamp;
+mod formantshifter;
+mod freqshifter;
 
 #[no_mangle]
 pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
@@ -18,6 +20,8 @@ pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
         2 => Some(centroid::get_descriptor()),
         3 => Some(expavg::get_descriptor()),
         4 => Some(modularamp::get_descriptor()),
+        5 => Some(formantshifter::get_descriptor()),
+        6 => Some(freqshifter::get_descriptor()),
         _ => None,
     }
 }
