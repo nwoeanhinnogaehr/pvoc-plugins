@@ -20,7 +20,7 @@ impl PitchShifter {
                 let index = ((j as f64) * rate) as usize;
                 if index < output[i].len() {
                     output[i][index].freq = input[i][j].freq * rate;
-                    output[i][index].amp = input[i][j].amp;
+                    output[i][index].amp += input[i][j].amp;
                 }
             }
         }
@@ -76,8 +76,8 @@ pub fn get_descriptor() -> PluginDescriptor {
                         desc: PortDescriptor::ControlInput,
                         hint: None,
                         default: Some(DefaultValue::Value1),
-                        lower_bound: Some(0.5),
-                        upper_bound: Some(2.0),
+                        lower_bound: Some(0.0),
+                        upper_bound: Some(8.0),
                     }],
         new: PitchShifter::new,
     }
