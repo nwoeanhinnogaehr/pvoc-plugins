@@ -18,4 +18,22 @@ Modulates frequency of the bins based on their amplitude.
 * Shift: Frequency offset.
 * Alpha: Exponential averaging alpha for amplitude estimate.
 
-TODO...
+### exponential averaging
+Modulates frequency and amplitude of bins based on exponential average of lower pitched bins.
+* Frequency alpha: exponential averaging alpha for frequency
+* Amplitude alpha: exponential averaging alpha for amplitude
+* Frequency mix: Mixer for original/modulated frequency
+* Amplitude mix: Mixer for original/modulated amplitude
+
+### formant shifter
+* Shift: Shift factor
+
+### frequency shifter
+* Shift: Shift factor
+
+### pitch shifter
+* Shift: Shift factor
+
+### modular amplitude
+Performs floating point modulus on the amplitude of each bin.
+* Mod: Divisor
