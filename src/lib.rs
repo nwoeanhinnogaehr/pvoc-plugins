@@ -7,6 +7,7 @@ use ladspa::PluginDescriptor;
 mod binflipper;
 mod pitchshifter;
 mod centroid;
+mod expavg;
 
 #[no_mangle]
 pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
@@ -14,6 +15,7 @@ pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
         0 => Some(binflipper::get_descriptor()),
         1 => Some(pitchshifter::get_descriptor()),
         2 => Some(centroid::get_descriptor()),
+        3 => Some(expavg::get_descriptor()),
         _ => None,
     }
 }
