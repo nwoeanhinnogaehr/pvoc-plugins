@@ -15,8 +15,8 @@ impl PitchShifter {
                bins: usize,
                input: &[Vec<Bin>],
                output: &mut [Vec<Bin>]) {
-        for i in 0..input.len() {
-            for j in 0..input[i].len() {
+        for i in 0..channels {
+            for j in 0..bins {
                 let index = ((j as f64) * rate) as usize;
                 if index < output[i].len() {
                     output[i][index].freq = input[i][j].freq * rate;

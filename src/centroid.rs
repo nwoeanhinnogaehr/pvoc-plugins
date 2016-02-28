@@ -87,7 +87,7 @@ pub fn get_descriptor() -> PluginDescriptor {
                         hint: Some(ladspa::HINT_INTEGER),
                         default: None,
                         lower_bound: Some(2.0),
-                        upper_bound: Some(12.0),
+                        upper_bound: Some(16.0),
                     }],
         new: Centroid::new,
     }
