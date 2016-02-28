@@ -11,6 +11,7 @@ mod expavg;
 mod modularamp;
 mod formantshifter;
 mod freqshifter;
+mod domainxover;
 
 #[no_mangle]
 pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
@@ -22,6 +23,7 @@ pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
         4 => Some(modularamp::get_descriptor()),
         5 => Some(formantshifter::get_descriptor()),
         6 => Some(freqshifter::get_descriptor()),
+        7 => Some(domainxover::get_descriptor()),
         _ => None,
     }
 }
