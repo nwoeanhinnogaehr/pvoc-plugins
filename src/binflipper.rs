@@ -1,9 +1,10 @@
 use pvoc::{PhaseVocoder, Bin};
-use ladspa::{self, PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection};
+use ladspa::{self, PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection, DefaultValue};
 
 struct BinFlipper {
     pvoc: PhaseVocoder,
     sample_rate: f64,
+    bins: usize,
 }
 
 impl BinFlipper {
@@ -11,6 +12,7 @@ impl BinFlipper {
         Box::new(BinFlipper {
             pvoc: PhaseVocoder::new(2, sample_rate as f64, 8, 4),
             sample_rate: sample_rate as f64,
+            bins: 8,
         })
     }
 
@@ -38,11 +40,17 @@ impl Plugin for BinFlipper {
         let mut outputr = ports[3].unwrap_audio_mut();
         let mut output = vec![&mut outputl[..], &mut outputr[..]];
         let sample_rate = self.sample_rate;
+        let bins = *ports[4].unwrap_control() as usize;
+        if bins != self.bins {
+            self.bins = bins;
+            self.pvoc = PhaseVocoder::new(2, self.sample_rate, bins, 4);
+        }
+        let mult = *ports[5].unwrap_control() as f64;
         self.pvoc.process(&input, &mut output, |channels: usize,
                            bins: usize,
                            input: &[Vec<Bin>],
                            output: &mut [Vec<Bin>]| {
-            BinFlipper::process(sample_rate, channels, bins, input, output)
+            BinFlipper::process(sample_rate * mult, channels, bins, input, output)
         });
     }
 }
@@ -74,6 +82,22 @@ pub fn get_descriptor() -> PluginDescriptor {
                         name: "Right Audio Out",
                         desc: PortDescriptor::AudioOutput,
                         ..Default::default()
+                    },
+                    Port {
+                        name: "Bins",
+                        desc: PortDescriptor::ControlInput,
+                        hint: Some(ladspa::HINT_INTEGER),
+                        default: None,
+                        lower_bound: Some(2.0),
+                        upper_bound: Some(16.0),
+                    },
+                    Port {
+                        name: "Nyquist multipliter",
+                        desc: PortDescriptor::ControlInput,
+                        hint: None,
+                        default: Some(DefaultValue::Value1),
+                        lower_bound: Some(0.0),
+                        upper_bound: Some(1.0),
                     }],
         new: BinFlipper::new,
     }
