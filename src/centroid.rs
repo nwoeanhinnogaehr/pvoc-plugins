@@ -1,22 +1,25 @@
 use pvoc::{PhaseVocoder, Bin};
-use ladspa::{PluginDescriptor, Plugin, PortConnection};
+use ladspa::{PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection};
+use super::{PVocPlugin, PVocDescriptor};
 
-struct Centroid {
-    pvoc: PhaseVocoder,
-    sample_rate: f64,
-    bins: usize,
-}
+plugin!(Centroid);
 
-impl Centroid {
-    fn new(_: &PluginDescriptor, sample_rate: u64) -> Box<Plugin + Send> {
-        Box::new(Centroid {
-            pvoc: PhaseVocoder::new(2, sample_rate as f64, 8, 4),
-            sample_rate: sample_rate as f64,
-            bins: 8,
-        })
+struct Centroid;
+
+impl PVocPlugin for Centroid {
+    fn descriptor() -> PVocDescriptor {
+        PVocDescriptor {
+            name: "pvoc centroid",
+            channels: 1,
+            ports: vec![],
+        }
     }
-
-    fn process(sample_rate: f64,
+    fn new(_: usize, _: f64, _: usize, _: usize) -> Centroid {
+        Centroid
+    }
+    fn process(&mut self,
+               _: &[f64],
+               sample_rate: f64,
                channels: usize,
                bins: usize,
                input: &[Vec<Bin>],
@@ -30,33 +33,4 @@ impl Centroid {
             }
         }
     }
-}
-
-impl Plugin for Centroid {
-    fn run<'a>(&mut self, _: usize, ports: &[&'a PortConnection<'a>]) {
-        let input = vec![ports[0].unwrap_audio(), ports[1].unwrap_audio()];
-        let mut outputl = ports[2].unwrap_audio_mut();
-        let mut outputr = ports[3].unwrap_audio_mut();
-        let mut output = vec![&mut outputl[..], &mut outputr[..]];
-        let bins = *ports[4].unwrap_control() as usize;
-        if bins != self.bins {
-            self.bins = bins;
-            self.pvoc = PhaseVocoder::new(2, self.sample_rate, bins, 4);
-        }
-        let sample_rate = self.sample_rate;
-        self.pvoc.process(&input, &mut output, |channels: usize,
-                           bins: usize,
-                           input: &[Vec<Bin>],
-                           output: &mut [Vec<Bin>]| {
-            Centroid::process(sample_rate, channels, bins, input, output)
-        });
-    }
-}
-
-pub fn get_descriptor() -> PluginDescriptor {
-    let mut desc = super::base_descriptor();
-    desc.label = "pvoc_centroid";
-    desc.name = "pvoc centroid";
-    desc.new = Centroid::new;
-    desc
 }
