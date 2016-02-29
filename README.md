@@ -37,3 +37,12 @@ Modulates frequency and amplitude of bins based on exponential average of lower 
 ### modular amplitude
 Performs floating point modulus on the amplitude of each bin.
 * Mod: Divisor
+
+### time blur
+Uses exponential averaging to blur amplitude and frequency across time.
+* Frequency alpha: exponential averaging alpha for frequency
+* Amplitude alpha: exponential averaging alpha for amplitude
+* Frequency mix: Mixer for original/modulated frequency
+* Amplitude mix: Mixer for original/modulated amplitude
+* Amplitude high replace: Mixer for replacing blurred amplitude with current amplitude when current amplitude exceeds blurred amplitude.
+* Amplitude low replace: Mixer for replacing blurred amplitude with current amplitude when blurred amplitude exceeds current amplitude.
