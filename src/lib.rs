@@ -65,7 +65,7 @@ pub fn base_descriptor() -> PluginDescriptor {
                         desc: PortDescriptor::ControlInput,
                         hint: Some(ladspa::HINT_INTEGER | ladspa::HINT_LOGARITHMIC),
                         default: None,
-                        lower_bound: Some(2.0),
+                        lower_bound: Some(4.0),
                         upper_bound: Some(65536.0),
                     }],
         new: new_unimplemented,
