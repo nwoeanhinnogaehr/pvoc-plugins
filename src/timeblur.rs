@@ -23,19 +23,29 @@ impl TimeBlur {
                amp_alpha: f64,
                freq_mix: f64,
                amp_mix: f64,
+               replace_high: f64,
+               replace_low: f64,
                channels: usize,
                bins: usize,
                input: &[Vec<Bin>],
                output: &mut [Vec<Bin>]) {
         for i in 0..channels {
             for j in 0..bins {
-                output[i][j].freq = buffer[i][j].freq * freq_mix +
-                                    input[i][j].freq * (1.0 - freq_mix);
-                output[i][j].amp = buffer[i][j].amp * amp_mix + input[i][j].amp * (1.0 - amp_mix);
                 buffer[i][j].freq = buffer[i][j].freq * freq_alpha +
                                     input[i][j].freq * (1.0 - freq_alpha);
                 buffer[i][j].amp = buffer[i][j].amp * amp_alpha +
                                    input[i][j].amp * (1.0 - amp_alpha);
+                if input[i][j].amp > buffer[i][j].amp {
+                    buffer[i][j].amp = input[i][j].amp * replace_high +
+                                       buffer[i][j].amp * (1.0 - replace_high);
+                }
+                if input[i][j].amp < buffer[i][j].amp {
+                    buffer[i][j].amp = input[i][j].amp * replace_low +
+                                       buffer[i][j].amp * (1.0 - replace_low);
+                }
+                output[i][j].freq = buffer[i][j].freq * freq_mix +
+                                    input[i][j].freq * (1.0 - freq_mix);
+                output[i][j].amp = buffer[i][j].amp * amp_mix + input[i][j].amp * (1.0 - amp_mix);
             }
         }
     }
@@ -52,6 +62,8 @@ impl Plugin for TimeBlur {
         let amp_alpha = *ports[6].unwrap_control() as f64;
         let freq_mix = *ports[7].unwrap_control() as f64;
         let amp_mix = *ports[8].unwrap_control() as f64;
+        let replace_high = *ports[9].unwrap_control() as f64;
+        let replace_low = *ports[10].unwrap_control() as f64;
         if bins != self.bins {
             self.bins = bins;
             self.pvoc = PhaseVocoder::new(2, self.sample_rate, bins, 4);
@@ -68,6 +80,8 @@ impl Plugin for TimeBlur {
                               amp_alpha,
                               freq_mix,
                               amp_mix,
+                              replace_high,
+                              replace_low,
                               channels,
                               bins,
                               input,
@@ -107,6 +121,22 @@ pub fn get_descriptor() -> PluginDescriptor {
     });
     desc.ports.push(Port {
         name: "Amplitude mix",
+        desc: PortDescriptor::ControlInput,
+        hint: None,
+        default: None,
+        lower_bound: Some(0.0),
+        upper_bound: Some(1.0),
+    });
+    desc.ports.push(Port {
+        name: "Amplitude high replace mix",
+        desc: PortDescriptor::ControlInput,
+        hint: None,
+        default: None,
+        lower_bound: Some(0.0),
+        upper_bound: Some(1.0),
+    });
+    desc.ports.push(Port {
+        name: "Amplitude low replace mix",
         desc: PortDescriptor::ControlInput,
         hint: None,
         default: None,
