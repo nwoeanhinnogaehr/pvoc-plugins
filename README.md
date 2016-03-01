@@ -59,3 +59,7 @@ Each bin is delayed by an amount relative to it's amplitude. Delay is measured i
 Filter out loud/quiet sounds
 * Gate: don't let sounds through that are quieter than this threshold
 * Duck: don't let sounds through that are louder than this threshold
+
+### slope filter
+Filter out sounds that are changing in frequency or amplitude
+* Freq/Amp min/max: thresholds for filter to activate
