@@ -54,3 +54,8 @@ Each bin is delayed by an amount relative to it's amplitude. Delay is measured i
 * Max delay: delay buffer size
 * Frequency/amplitude mix: mixer for delayed/original signal
 * Frequency/amplitude feedback: multiplier for previously read events - at 1, samples will remain in the buffer until they are overwritten, possibly looping after the max delay.
+
+### gate
+Filter out loud/quiet sounds
+* Gate: don't let sounds through that are quieter than this threshold
+* Duck: don't let sounds through that are louder than this threshold
