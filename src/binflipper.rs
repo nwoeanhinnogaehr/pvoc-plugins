@@ -25,13 +25,14 @@ impl PVocPlugin for BinFlipper {
         BinFlipper
     }
     fn process(&mut self,
-               _: &[f64],
+               params: &[f64],
                sample_rate: f64,
                channels: usize,
                bins: usize,
                input: &[Vec<Bin>],
                output: &mut [Vec<Bin>]) {
-        let freq_per_bin = sample_rate / (bins as f64);
+        let mult = params[0];
+        let freq_per_bin = sample_rate / (bins as f64) * mult;
         for i in 0..channels {
             for j in 0..bins {
                 let expect = freq_per_bin * (j as f64) + freq_per_bin / 2.0;
