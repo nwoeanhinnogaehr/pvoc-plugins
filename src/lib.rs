@@ -46,7 +46,7 @@ macro_rules! plugin {
                     });
                 }
                 let ports = &ports[self.channels*2..];
-                let bins = *ports[0].unwrap_control() as usize;
+                let bins = 1 << *ports[0].unwrap_control() as usize;
                 let time_div = *ports[1].unwrap_control() as usize;
                 if bins != self.bins || time_div != self.time_div {
                     self.bins = bins;
@@ -96,12 +96,12 @@ macro_rules! plugin {
             }
             desc.ports.extend(&[
                               Port {
-                                  name: "Bins",
+                                  name: "Bins log2",
                                   desc: PortDescriptor::ControlInput,
                                   hint: Some(ladspa::HINT_INTEGER),
                                   default: Some(ladspa::DefaultValue::Low),
-                                  lower_bound: Some(4.0),
-                                  upper_bound: Some(65536.0),
+                                  lower_bound: Some(2.0),
+                                  upper_bound: Some(16.0),
                               },
                               Port {
                                   name: "Time divisions",
@@ -109,7 +109,7 @@ macro_rules! plugin {
                                   hint: Some(ladspa::HINT_INTEGER),
                                   default: Some(ladspa::DefaultValue::Low),
                                   lower_bound: Some(1.0),
-                                  upper_bound: Some(64.0),
+                                  upper_bound: Some(32.0),
                               }]);
             desc.ports.extend(&pdesc.ports);
             desc
