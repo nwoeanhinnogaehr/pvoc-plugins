@@ -3,7 +3,8 @@ A collection of phase vocoder based LADSPA plugins.
 Compile with `cargo build --release`, throw `target/release/libpvoc_plugins.so` in your LADSPA path, and you're good to go!
 
 ## The plugins
-Every plugin has a "Bins" setting - this controls the number of frequency bins used for the phase vocoder. Few will likely be low quality and many will blur the audio through time. For optimal performance, this should be a power of two or the sum of a small number of powers of two.
+* Bins log2: the number of frequency bins used for the phase vocoder. Few will likely be low quality and many will blur the audio through time. Somewhere between 6 and 13 is usually what you want.
+* Time divs: the number of overlapping frames to use. Powers of two between 4 and 32 are good choices.
 
 ### bin flipper
 This linearly inverts the frequency of each bin.
@@ -46,3 +47,10 @@ Uses exponential averaging to blur amplitude and frequency across time.
 * Amplitude mix: Mixer for original/modulated amplitude
 * Amplitude high replace: Mixer for replacing blurred amplitude with current amplitude when current amplitude exceeds blurred amplitude.
 * Amplitude low replace: Mixer for replacing blurred amplitude with current amplitude when blurred amplitude exceeds current amplitude.
+
+### amplitude scaled delay
+Each bin is delayed by an amount relative to it's amplitude. Delay is measured in frames that are bins/time-div/sample-rate seconds long.
+* Delay: amount of time to delay by
+* Max delay: delay buffer size
+* Frequency/amplitude mix: mixer for delayed/original signal
+* Frequency/amplitude feedback: multiplier for previously read events - at 1, samples will remain in the buffer until they are overwritten, possibly looping after the max delay.

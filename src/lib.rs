@@ -126,6 +126,7 @@ mod formantshifter;
 mod freqshifter;
 mod domainxover;
 mod timeblur;
+mod ampdelay;
 
 #[no_mangle]
 pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
@@ -139,6 +140,7 @@ pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
         6 => Some(freqshifter::get_descriptor()),
         7 => Some(domainxover::get_descriptor()),
         8 => Some(timeblur::get_descriptor()),
+        9 => Some(ampdelay::get_descriptor()),
         _ => None,
     }
     .map(|mut x| {
