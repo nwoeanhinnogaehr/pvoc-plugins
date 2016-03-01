@@ -47,14 +47,16 @@ macro_rules! plugin {
                 }
                 let ports = &ports[self.channels*2..];
                 let bins = *ports[0].unwrap_control() as usize;
-                if bins != self.bins {
+                let time_div = *ports[1].unwrap_control() as usize;
+                if bins != self.bins || time_div != self.time_div {
                     self.bins = bins;
+                    self.time_div = time_div;
                     self.pvoc = PhaseVocoder::new(self.channels, self.sample_rate, self.bins, self.time_div);
                     self.plugin = $name::new(self.channels, self.sample_rate, self.bins, self.time_div);
                 }
                 let sample_rate = self.sample_rate;
                 let plugin = &mut self.plugin;
-                let user_ports = ports[1..].iter().map(|&x| *x.unwrap_control() as f64).collect::<Vec<f64>>();
+                let user_ports = ports[2..].iter().map(|&x| *x.unwrap_control() as f64).collect::<Vec<f64>>();
                 self.pvoc.process(&input, &mut output, |channels: usize, bins: usize,
                                   input: &[Vec<Bin>], output: &mut [Vec<Bin>]| {
                                       plugin.process(&user_ports, sample_rate, channels, bins, input, output)
@@ -92,14 +94,23 @@ macro_rules! plugin {
                     ..Default::default()
                 });
             }
-            desc.ports.extend(&[Port {
-                name: "Bins",
-                desc: PortDescriptor::ControlInput,
-                hint: Some(ladspa::HINT_INTEGER | ladspa::HINT_LOGARITHMIC),
-                default: None,
-                lower_bound: Some(4.0),
-                upper_bound: Some(65536.0),
-            }]);
+            desc.ports.extend(&[
+                              Port {
+                                  name: "Bins",
+                                  desc: PortDescriptor::ControlInput,
+                                  hint: Some(ladspa::HINT_INTEGER),
+                                  default: Some(ladspa::DefaultValue::Low),
+                                  lower_bound: Some(4.0),
+                                  upper_bound: Some(65536.0),
+                              },
+                              Port {
+                                  name: "Time divisions",
+                                  desc: PortDescriptor::ControlInput,
+                                  hint: Some(ladspa::HINT_INTEGER),
+                                  default: Some(ladspa::DefaultValue::Low),
+                                  lower_bound: Some(1.0),
+                                  upper_bound: Some(64.0),
+                              }]);
             desc.ports.extend(&pdesc.ports);
             desc
         }
