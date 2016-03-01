@@ -63,3 +63,8 @@ Filter out loud/quiet sounds
 ### slope filter
 Filter out sounds that are changing in frequency or amplitude
 * Freq/Amp min/max: thresholds for filter to activate
+
+### repeater
+Capture a sound then repeat it indefinitely
+* Length: The length of the section to repeat, in frames
+* Hold: Mixer for input signal/signal from loop buffer
