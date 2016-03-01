@@ -97,7 +97,7 @@ impl PVocPlugin for AmpDelay {
         self.time %= max_delay;
         for i in 0..channels {
             for j in 0..bins {
-                let bin_delay = (input[i][j].amp.log2() * delay).min(max_delay as f64) as usize;
+                let bin_delay = ((input[i][j].amp + 1.0).log2() * delay) as usize;
                 buffer[(self.time + bin_delay) % max_delay][i][j] = input[i][j];
                 output[i][j].amp = buffer[self.time][i][j].amp * amp_mix +
                                    input[i][j].amp * (1.0 - amp_mix);
