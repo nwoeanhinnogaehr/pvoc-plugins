@@ -10,6 +10,7 @@ impl PVocPlugin for PitchShifter {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc pitch shifter",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Shift",

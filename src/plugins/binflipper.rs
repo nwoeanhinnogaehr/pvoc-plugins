@@ -10,6 +10,7 @@ impl PVocPlugin for BinFlipper {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc bin flipper",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Nyquist multipliter",

@@ -10,6 +10,7 @@ impl PVocPlugin for DomainXOver {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc domain crossover",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Add",

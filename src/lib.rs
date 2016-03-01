@@ -20,6 +20,7 @@ pub trait PVocPlugin {
 
 pub struct PVocDescriptor {
     name: &'static str,
+    author: &'static str,
     channels: usize,
     ports: Vec<Port>,
 }
@@ -93,7 +94,7 @@ macro_rules! plugin {
                     label: pdesc.name,
                     properties: ladspa::PROP_NONE,
                     name: pdesc.name,
-                    maker: "Noah Weninger",
+                    maker: pdesc.author,
                     copyright: "None",
                     ports: vec![],
                     new: __new_plug,

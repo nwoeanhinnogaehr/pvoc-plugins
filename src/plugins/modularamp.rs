@@ -10,6 +10,7 @@ impl PVocPlugin for ModularAmp {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc amplitude modulus",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Mod",

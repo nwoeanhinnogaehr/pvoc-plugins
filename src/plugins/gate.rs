@@ -10,6 +10,7 @@ impl PVocPlugin for Gate {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc gate",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Gate",

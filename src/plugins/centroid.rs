@@ -10,6 +10,7 @@ impl PVocPlugin for Centroid {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc centroid",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![],
         }

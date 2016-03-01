@@ -10,6 +10,7 @@ impl PVocPlugin for FreqShifter {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc frequency shifter",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Shift",

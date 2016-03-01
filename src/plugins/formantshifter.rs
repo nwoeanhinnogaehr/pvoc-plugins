@@ -10,6 +10,7 @@ impl PVocPlugin for FormantShifter {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc formant shifter",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Shift",

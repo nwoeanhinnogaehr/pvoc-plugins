@@ -14,6 +14,7 @@ impl PVocPlugin for AmpDelay {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc amplitude scaled delay",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Delay",

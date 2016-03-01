@@ -10,6 +10,7 @@ impl PVocPlugin for ExpAvg {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc upwards sweeping exponential averager",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Frequency alpha",

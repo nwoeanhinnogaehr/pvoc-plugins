@@ -12,6 +12,7 @@ impl PVocPlugin for SlopeFilter {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc slope filter",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Freq min",

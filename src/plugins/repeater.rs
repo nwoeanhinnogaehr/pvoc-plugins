@@ -15,6 +15,7 @@ impl PVocPlugin for Repeater {
     fn descriptor() -> PVocDescriptor {
         PVocDescriptor {
             name: "pvoc repeater",
+            author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
                             name: "Length",
