@@ -33,9 +33,9 @@ impl PVocPlugin for FreqShifter {
                output: &mut [Vec<Bin>]) {
         let shift = ports[0];
         for i in 0..channels {
-            for j in 0..bins {
+            for j in 0..bins / 2 {
                 let index = ((j as f64) * shift) as usize;
-                if index < bins {
+                if index < bins / 2 {
                     output[i][index].freq = input[i][j].freq * shift;
                 }
                 output[i][j].amp = input[i][j].amp;
