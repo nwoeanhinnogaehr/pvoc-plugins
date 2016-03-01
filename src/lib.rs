@@ -3,8 +3,26 @@
 extern crate ladspa;
 extern crate pvoc;
 
-use ladspa::{PluginDescriptor, Port};
 use pvoc::Bin;
+use ladspa::Port;
+
+pub trait PVocPlugin {
+    fn descriptor() -> PVocDescriptor;
+    fn new(channels: usize, sample_rate: f64, bins: usize, time_div: usize) -> Self;
+    fn process(&mut self,
+               ports: &[f64],
+               sample_rate: f64,
+               channels: usize,
+               bins: usize,
+               input: &[Vec<Bin>],
+               output: &mut [Vec<Bin>]);
+}
+
+pub struct PVocDescriptor {
+    name: &'static str,
+    channels: usize,
+    ports: Vec<Port>,
+}
 
 macro_rules! plugin {
     ($name:ident) => {
@@ -117,56 +135,4 @@ macro_rules! plugin {
     };
 }
 
-mod binflipper;
-mod pitchshifter;
-mod centroid;
-mod expavg;
-mod modularamp;
-mod formantshifter;
-mod freqshifter;
-mod domainxover;
-mod timeblur;
-mod ampdelay;
-mod gate;
-mod slopefilter;
-
-#[no_mangle]
-pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
-    match index {
-        0 => Some(binflipper::get_descriptor()),
-        1 => Some(pitchshifter::get_descriptor()),
-        2 => Some(centroid::get_descriptor()),
-        3 => Some(expavg::get_descriptor()),
-        4 => Some(modularamp::get_descriptor()),
-        5 => Some(formantshifter::get_descriptor()),
-        6 => Some(freqshifter::get_descriptor()),
-        7 => Some(domainxover::get_descriptor()),
-        8 => Some(timeblur::get_descriptor()),
-        9 => Some(ampdelay::get_descriptor()),
-        10 => Some(gate::get_descriptor()),
-        11 => Some(slopefilter::get_descriptor()),
-        _ => None,
-    }
-    .map(|mut x| {
-        x.unique_id += index;
-        x
-    })
-}
-
-trait PVocPlugin {
-    fn descriptor() -> PVocDescriptor;
-    fn new(channels: usize, sample_rate: f64, bins: usize, time_div: usize) -> Self;
-    fn process(&mut self,
-               ports: &[f64],
-               sample_rate: f64,
-               channels: usize,
-               bins: usize,
-               input: &[Vec<Bin>],
-               output: &mut [Vec<Bin>]);
-}
-
-struct PVocDescriptor {
-    name: &'static str,
-    channels: usize,
-    ports: Vec<Port>,
-}
+pub mod plugins;
