@@ -40,6 +40,22 @@ impl PVocPlugin for Repeater {
                             default: Some(DefaultValue::Value0),
                             lower_bound: Some(0.0),
                             upper_bound: Some(1.0),
+                        },
+                        Port {
+                            name: "Decay",
+                            desc: PortDescriptor::ControlInput,
+                            hint: None,
+                            default: Some(DefaultValue::Value1),
+                            lower_bound: Some(0.0),
+                            upper_bound: Some(1.0),
+                        },
+                        Port {
+                            name: "Mix",
+                            desc: PortDescriptor::ControlInput,
+                            hint: None,
+                            default: Some(DefaultValue::Value1),
+                            lower_bound: Some(0.0),
+                            upper_bound: Some(1.0),
                         }],
         }
     }
@@ -61,6 +77,8 @@ impl PVocPlugin for Repeater {
         let length = ports[0] as usize;
         let freq_hold = ports[1];
         let amp_hold = ports[2];
+        let decay = ports[3];
+        let mix = ports[4];
 
         self.time %= length;
         for i in 0..channels {
@@ -71,7 +89,9 @@ impl PVocPlugin for Repeater {
                 self.buffer[self.time][i][j].freq = lerp(self.buffer[self.time][i][j].freq,
                                                          input[i][j].freq,
                                                          freq_hold);
-                output[i][j] = self.buffer[self.time][i][j];
+                output[i][j].amp = lerp(self.buffer[self.time][i][j].amp, input[i][j].amp, mix);
+                output[i][j].freq = self.buffer[self.time][i][j].freq;
+                self.buffer[self.time][i][j].amp *= decay;
             }
         }
         self.time += 1;
