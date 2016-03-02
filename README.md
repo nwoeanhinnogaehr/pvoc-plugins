@@ -68,6 +68,8 @@ Filter out sounds that are changing in frequency or amplitude
 Capture a sound then repeat it indefinitely
 * Length: The length of the section to repeat, in frames
 * Hold: Mixer for input signal/signal from loop buffer
+* Decay: Multiplier for buffer amplitude
+* Mix: Amplitude dry/wet.
 
 ## Contributing
 Contributions (new plugins, fixes, etc) are welcome! To make sure everything goes smoothly, please ensure your code is formatted with `rustfmt`, produces no warnings and follows existing conventions to the extent possible.
