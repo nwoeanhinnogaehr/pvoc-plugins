@@ -1,6 +1,6 @@
 use pvoc::{PhaseVocoder, Bin};
 use ladspa::{PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection, DefaultValue};
-use super::{PVocPlugin, PVocDescriptor};
+use super::{PVocPlugin, PVocDescriptor, lerp};
 
 plugin!(AmpDelay);
 
@@ -100,10 +100,8 @@ impl PVocPlugin for AmpDelay {
             for j in 0..bins {
                 let bin_delay = ((input[i][j].amp + 1.0).log2() * delay) as usize;
                 buffer[(self.time + bin_delay) % max_delay][i][j] = input[i][j];
-                output[i][j].amp = buffer[self.time][i][j].amp * amp_mix +
-                                   input[i][j].amp * (1.0 - amp_mix);
-                output[i][j].freq = buffer[self.time][i][j].freq * freq_mix +
-                                    input[i][j].freq * (1.0 - freq_mix);
+                output[i][j].amp = lerp(buffer[self.time][i][j].amp, input[i][j].amp, amp_mix);
+                output[i][j].freq = lerp(buffer[self.time][i][j].freq, input[i][j].freq, freq_mix);
                 buffer[self.time][i][j].freq *= freq_feed;
                 buffer[self.time][i][j].amp *= amp_feed;
             }

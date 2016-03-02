@@ -39,3 +39,7 @@ pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
         x
     })
 }
+
+fn lerp(a: f64, b: f64, x: f64) -> f64 {
+    a * x + b * (1.0 - x)
+}

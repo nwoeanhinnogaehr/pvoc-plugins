@@ -1,6 +1,6 @@
 use pvoc::{PhaseVocoder, Bin};
 use ladspa::{PluginDescriptor, PortDescriptor, Port, DefaultValue, Plugin, PortConnection};
-use super::{PVocPlugin, PVocDescriptor};
+use super::{PVocPlugin, PVocDescriptor, lerp};
 
 plugin!(DomainXOver);
 
@@ -58,7 +58,7 @@ impl PVocPlugin for DomainXOver {
                 output[i][j].freq = input[i][j].freq + shift * freq_per_bin +
                                     ((avg - input[i][j].amp) * add);
                 output[i][j].amp = input[i][j].amp;
-                avg = avg * alpha + input[i][j].amp * (1.0 - alpha);
+                avg = lerp(avg, input[i][j].amp, alpha);
             }
         }
     }

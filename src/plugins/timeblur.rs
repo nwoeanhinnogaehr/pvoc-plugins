@@ -1,6 +1,6 @@
 use pvoc::{PhaseVocoder, Bin};
 use ladspa::{PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection};
-use super::{PVocPlugin, PVocDescriptor};
+use super::{PVocPlugin, PVocDescriptor, lerp};
 
 plugin!(TimeBlur);
 
@@ -85,21 +85,16 @@ impl PVocPlugin for TimeBlur {
         let mut buffer = &mut self.buffer;
         for i in 0..channels {
             for j in 0..bins {
-                buffer[i][j].freq = buffer[i][j].freq * freq_alpha +
-                                    input[i][j].freq * (1.0 - freq_alpha);
-                buffer[i][j].amp = buffer[i][j].amp * amp_alpha +
-                                   input[i][j].amp * (1.0 - amp_alpha);
+                buffer[i][j].freq = lerp(buffer[i][j].freq, input[i][j].freq, freq_alpha);
+                buffer[i][j].amp = lerp(buffer[i][j].amp, input[i][j].amp, amp_alpha);
                 if input[i][j].amp > buffer[i][j].amp {
-                    buffer[i][j].amp = input[i][j].amp * replace_high +
-                                       buffer[i][j].amp * (1.0 - replace_high);
+                    buffer[i][j].amp = lerp(input[i][j].amp, buffer[i][j].amp, replace_high);
                 }
                 if input[i][j].amp < buffer[i][j].amp {
-                    buffer[i][j].amp = input[i][j].amp * replace_low +
-                                       buffer[i][j].amp * (1.0 - replace_low);
+                    buffer[i][j].amp = lerp(input[i][j].amp, buffer[i][j].amp, replace_low);
                 }
-                output[i][j].freq = buffer[i][j].freq * freq_mix +
-                                    input[i][j].freq * (1.0 - freq_mix);
-                output[i][j].amp = buffer[i][j].amp * amp_mix + input[i][j].amp * (1.0 - amp_mix);
+                output[i][j].freq = lerp(buffer[i][j].freq, input[i][j].freq, freq_mix);
+                output[i][j].amp = lerp(buffer[i][j].amp, input[i][j].amp, amp_mix);
             }
         }
     }

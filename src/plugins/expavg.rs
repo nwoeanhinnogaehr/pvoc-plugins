@@ -1,6 +1,6 @@
 use pvoc::{PhaseVocoder, Bin};
 use ladspa::{PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection};
-use super::{PVocPlugin, PVocDescriptor};
+use super::{PVocPlugin, PVocDescriptor, lerp};
 
 plugin!(ExpAvg);
 
@@ -66,10 +66,10 @@ impl PVocPlugin for ExpAvg {
             let mut avg_freq = input[i][0].freq;
             let mut avg_amp = input[i][0].amp;
             for j in 0..bins {
-                output[i][j].freq = avg_freq * freq_mix + input[i][j].freq * (1.0 - freq_mix);
-                output[i][j].amp = avg_amp * amp_mix + input[i][j].amp * (1.0 - amp_mix);
-                avg_freq = avg_freq * freq_alpha + input[i][j].freq * (1.0 - freq_alpha);
-                avg_amp = avg_amp * amp_alpha + input[i][j].amp * (1.0 - amp_alpha);
+                output[i][j].freq = lerp(avg_freq, input[i][j].freq, freq_mix);
+                output[i][j].amp = lerp(avg_amp, input[i][j].amp, amp_mix);
+                avg_freq = lerp(avg_freq, input[i][j].freq, freq_alpha);
+                avg_amp = lerp(avg_amp, input[i][j].amp, amp_alpha);
             }
         }
     }
