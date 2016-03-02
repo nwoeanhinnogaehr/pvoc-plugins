@@ -1,6 +1,6 @@
 use pvoc::{PhaseVocoder, Bin};
 use ladspa::{PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection, DefaultValue};
-use super::{PVocPlugin, PVocDescriptor};
+use super::{PVocPlugin, PVocDescriptor, lerp};
 
 const MAX_LENGTH: usize = 2000;
 
@@ -26,7 +26,15 @@ impl PVocPlugin for Repeater {
                             upper_bound: Some(MAX_LENGTH as f32),
                         },
                         Port {
-                            name: "Hold",
+                            name: "Freq hold",
+                            desc: PortDescriptor::ControlInput,
+                            hint: None,
+                            default: Some(DefaultValue::Value0),
+                            lower_bound: Some(0.0),
+                            upper_bound: Some(1.0),
+                        },
+                        Port {
+                            name: "Amp hold",
                             desc: PortDescriptor::ControlInput,
                             hint: None,
                             default: Some(DefaultValue::Value0),
@@ -51,15 +59,18 @@ impl PVocPlugin for Repeater {
                input: &[Vec<Bin>],
                output: &mut [Vec<Bin>]) {
         let length = ports[0] as usize;
-        let hold = ports[1];
+        let freq_hold = ports[1];
+        let amp_hold = ports[2];
 
         self.time %= length;
         for i in 0..channels {
             for j in 0..bins {
-                self.buffer[self.time][i][j].amp = self.buffer[self.time][i][j].amp * hold +
-                                                   input[i][j].amp * (1.0 - hold);
-                self.buffer[self.time][i][j].freq = self.buffer[self.time][i][j].freq * hold +
-                                                    input[i][j].freq * (1.0 - hold);
+                self.buffer[self.time][i][j].amp = lerp(self.buffer[self.time][i][j].amp,
+                                                        input[i][j].amp,
+                                                        amp_hold);
+                self.buffer[self.time][i][j].freq = lerp(self.buffer[self.time][i][j].freq,
+                                                         input[i][j].freq,
+                                                         freq_hold);
                 output[i][j] = self.buffer[self.time][i][j];
             }
         }
