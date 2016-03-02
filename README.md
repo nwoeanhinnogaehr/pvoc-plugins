@@ -71,5 +71,10 @@ Capture a sound then repeat it indefinitely
 * Decay: Multiplier for buffer amplitude
 * Mix: Amplitude dry/wet.
 
+### scrambler
+Reorder frames by indexing into a circular buffer by some specified increment.
+* Length: Circular buffer length
+* Increment: Circular buffer index increment
+
 ## Contributing
 Contributions (new plugins, fixes, etc) are welcome! To make sure everything goes smoothly, please ensure your code is formatted with `rustfmt`, produces no warnings and follows existing conventions to the extent possible.

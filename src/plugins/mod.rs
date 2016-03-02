@@ -15,6 +15,7 @@ mod ampdelay;
 mod gate;
 mod slopefilter;
 mod repeater;
+mod scrambler;
 
 #[no_mangle]
 pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
@@ -32,6 +33,7 @@ pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {
         10 => Some(gate::get_descriptor()),
         11 => Some(slopefilter::get_descriptor()),
         12 => Some(repeater::get_descriptor()),
+        13 => Some(scrambler::get_descriptor()),
         _ => None,
     }
     .map(|mut x| {
