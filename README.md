@@ -1,6 +1,5 @@
 # pvoc-plugins
-A collection of phase vocoder based LADSPA plugins.
-Compile with `cargo build --release`, throw `target/release/libpvoc_plugins.so` in your LADSPA path, and you're good to go!
+A collection of phase vocoder based LADSPA plugins written in Rust. The latest Rust nightly build is recommended. Compile with `cargo build --release`, throw `target/release/libpvoc_plugins.so` in your LADSPA path, and you're good to go!
 
 ## The plugins
 * Bins log2: the number of frequency bins used for the phase vocoder. Few will likely be low quality and many will blur the audio through time. Somewhere between 6 and 13 is usually what you want.
