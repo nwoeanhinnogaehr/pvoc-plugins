@@ -1,6 +1,6 @@
-use pvoc::{PhaseVocoder, Bin};
-use ladspa::{PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection};
-use super::{PVocPlugin, PVocDescriptor};
+use super::{PVocDescriptor, PVocPlugin};
+use ladspa::{Plugin, PluginDescriptor, Port, PortConnection, PortDescriptor};
+use pvoc::{Bin, PhaseVocoder};
 
 plugin!(Centroid);
 
@@ -18,13 +18,15 @@ impl PVocPlugin for Centroid {
     fn new(_: usize, _: f64, _: usize, _: usize) -> Centroid {
         Centroid
     }
-    fn process(&mut self,
-               _: &[f64],
-               sample_rate: f64,
-               channels: usize,
-               bins: usize,
-               input: &[Vec<Bin>],
-               output: &mut [Vec<Bin>]) {
+    fn process(
+        &mut self,
+        _: &[f64],
+        sample_rate: f64,
+        channels: usize,
+        bins: usize,
+        input: &[Vec<Bin>],
+        output: &mut [Vec<Bin>],
+    ) {
         let freq_per_bin = sample_rate / (bins as f64);
         for i in 0..channels {
             for j in 0..bins {

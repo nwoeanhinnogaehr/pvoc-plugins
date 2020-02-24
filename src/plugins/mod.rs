@@ -1,22 +1,22 @@
 use ladspa::PluginDescriptor;
 
-pub use super::{PVocPlugin, PVocDescriptor};
+pub use super::{PVocDescriptor, PVocPlugin};
 
+mod ampdelay;
 mod binflipper;
-mod pitchshifter;
 mod centroid;
+mod domainxover;
 mod expavg;
-mod modularamp;
 mod formantshifter;
 mod freqshifter;
-mod domainxover;
-mod timeblur;
-mod ampdelay;
 mod gate;
-mod slopefilter;
+mod modularamp;
+mod pitchshifter;
 mod repeater;
 mod scrambler;
+mod slopefilter;
 mod stencil;
+mod timeblur;
 
 #[no_mangle]
 pub fn get_ladspa_descriptor(index: u64) -> Option<PluginDescriptor> {

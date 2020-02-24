@@ -1,6 +1,6 @@
-use pvoc::{PhaseVocoder, Bin};
-use ladspa::{PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection};
-use super::{PVocPlugin, PVocDescriptor, lerp};
+use super::{lerp, PVocDescriptor, PVocPlugin};
+use ladspa::{Plugin, PluginDescriptor, Port, PortConnection, PortDescriptor};
+use pvoc::{Bin, PhaseVocoder};
 
 plugin!(ExpAvg);
 
@@ -12,38 +12,40 @@ impl PVocPlugin for ExpAvg {
             name: "pvoc upwards sweeping exponential averager",
             author: "Noah Weninger",
             channels: 1,
-            ports: vec![Port {
-                            name: "Frequency alpha",
-                            desc: PortDescriptor::ControlInput,
-                            hint: None,
-                            default: None,
-                            lower_bound: Some(0.0),
-                            upper_bound: Some(1.0),
-                        },
-                        Port {
-                            name: "Amplitude alpha",
-                            desc: PortDescriptor::ControlInput,
-                            hint: None,
-                            default: None,
-                            lower_bound: Some(0.0),
-                            upper_bound: Some(1.0),
-                        },
-                        Port {
-                            name: "Freqency mix",
-                            desc: PortDescriptor::ControlInput,
-                            hint: None,
-                            default: None,
-                            lower_bound: Some(0.0),
-                            upper_bound: Some(1.0),
-                        },
-                        Port {
-                            name: "Amplitude mix",
-                            desc: PortDescriptor::ControlInput,
-                            hint: None,
-                            default: None,
-                            lower_bound: Some(0.0),
-                            upper_bound: Some(1.0),
-                        }],
+            ports: vec![
+                Port {
+                    name: "Frequency alpha",
+                    desc: PortDescriptor::ControlInput,
+                    hint: None,
+                    default: None,
+                    lower_bound: Some(0.0),
+                    upper_bound: Some(1.0),
+                },
+                Port {
+                    name: "Amplitude alpha",
+                    desc: PortDescriptor::ControlInput,
+                    hint: None,
+                    default: None,
+                    lower_bound: Some(0.0),
+                    upper_bound: Some(1.0),
+                },
+                Port {
+                    name: "Freqency mix",
+                    desc: PortDescriptor::ControlInput,
+                    hint: None,
+                    default: None,
+                    lower_bound: Some(0.0),
+                    upper_bound: Some(1.0),
+                },
+                Port {
+                    name: "Amplitude mix",
+                    desc: PortDescriptor::ControlInput,
+                    hint: None,
+                    default: None,
+                    lower_bound: Some(0.0),
+                    upper_bound: Some(1.0),
+                },
+            ],
         }
     }
 
@@ -51,13 +53,15 @@ impl PVocPlugin for ExpAvg {
         ExpAvg
     }
 
-    fn process(&mut self,
-               ports: &[f64],
-               _: f64,
-               channels: usize,
-               bins: usize,
-               input: &[Vec<Bin>],
-               output: &mut [Vec<Bin>]) {
+    fn process(
+        &mut self,
+        ports: &[f64],
+        _: f64,
+        channels: usize,
+        bins: usize,
+        input: &[Vec<Bin>],
+        output: &mut [Vec<Bin>],
+    ) {
         let freq_alpha = ports[0];
         let amp_alpha = ports[1];
         let freq_mix = ports[2];

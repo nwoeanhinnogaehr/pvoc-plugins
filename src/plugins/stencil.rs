@@ -1,6 +1,6 @@
-use pvoc::{PhaseVocoder, Bin};
-use ladspa::{PluginDescriptor, PortDescriptor, Port, Plugin, PortConnection, DefaultValue};
-use super::{PVocPlugin, PVocDescriptor};
+use super::{PVocDescriptor, PVocPlugin};
+use ladspa::{DefaultValue, Plugin, PluginDescriptor, Port, PortConnection, PortDescriptor};
+use pvoc::{Bin, PhaseVocoder};
 
 const SIZE: usize = 4;
 
@@ -18,13 +18,13 @@ impl PVocPlugin for Stencil {
             author: "Noah Weninger",
             channels: 1,
             ports: vec![Port {
-                            name: "Stencil",
-                            desc: PortDescriptor::ControlInput,
-                            hint: Some(ladspa::HINT_INTEGER),
-                            default: Some(DefaultValue::Value1),
-                            lower_bound: Some(0.0),
-                            upper_bound: Some(((1 << SIZE * SIZE) - 1) as f32),
-                        }],
+                name: "Stencil",
+                desc: PortDescriptor::ControlInput,
+                hint: Some(ladspa::HINT_INTEGER),
+                default: Some(DefaultValue::Value1),
+                lower_bound: Some(0.0),
+                upper_bound: Some(((1 << SIZE * SIZE) - 1) as f32),
+            }],
         }
     }
     fn new(channels: usize, _: f64, bins: usize, _: usize) -> Stencil {
@@ -33,15 +33,17 @@ impl PVocPlugin for Stencil {
             time: 0,
         }
     }
-    fn process(&mut self,
-               ports: &[f64],
-               sample_rate: f64,
-               channels: usize,
-               bins: usize,
-               input: &[Vec<Bin>],
-               output: &mut [Vec<Bin>]) {
+    fn process(
+        &mut self,
+        ports: &[f64],
+        sample_rate: f64,
+        channels: usize,
+        bins: usize,
+        input: &[Vec<Bin>],
+        output: &mut [Vec<Bin>],
+    ) {
         let stencil = ports[0] as usize;
-        let freq_per_bin = sample_rate / (bins as f64);
+        let _freq_per_bin = sample_rate / (bins as f64);
         self.time %= SIZE;
         for i in 0..channels {
             for j in 0..bins {
